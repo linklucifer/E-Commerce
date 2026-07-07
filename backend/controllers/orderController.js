@@ -15,19 +15,19 @@ const placeOrder = async (req, res) => {
             amount,
             paymentMethod: "COD",
             payment: false,
-            data: Date.now()
+            date: Date.now()
         }
 
         const newOrder = new orderModel(orderData)
         await newOrder.save()
 
-        await userModel.findByIdAndUpdate(userId, {cartData: {}})
+        await userModel.findByIdAndUpdate(userId, { cartData: {} })
 
-        res.json({success: true, message: "Order Placed"})
+        res.json({ success: true, message: "Order Placed" })
 
     } catch (error) {
         console.log(error)
-        res.json({success: false, message: error.message})
+        res.json({ success: false, message: error.message })
     }
 
 }
@@ -49,7 +49,17 @@ const allOrders = async (req, res) => {
 
 // User Order Data For Frontend
 const userOrders = async (req, res) => {
+    try {
 
+        const { userId } = req.body
+
+        const orders = await orderModel.find({ userId })
+        res.json({ success: true, orders })
+
+    } catch (error) {
+        console.log(error)
+        res.json({ success: false, message: error.message })
+    }
 }
 
 // Update order status from Admin Panel
